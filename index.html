@@ -21,7 +21,7 @@
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            100% { transform rotate(360deg); }
         }
     </style>
 </head>
@@ -88,8 +88,8 @@
     </main>
 
 <script>
-    // Constants for Gemini API
-    const apiKey = ""; // Canvas will automatically populate this
+    // CRITICAL: You MUST replace "YOUR_KEY_HERE" with your actual Gemini API Key from Google AI Studio.
+    const apiKey = "AIzaSyAEOJjKM4OyV4sEUX71zuwgMlXHemiKdIY"; 
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
     // Define the official standards and determinants for the LLM's context
@@ -128,7 +128,8 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`API call failed with status: ${response.status}`);
+                    const errorText = await response.text();
+                    throw new Error(`API call failed with status: ${response.status}. Response: ${errorText}`);
                 }
 
                 const result = await response.json();
@@ -175,11 +176,20 @@
         document.getElementById('outputSnippet').textContent = '';
 
         if (!achievement) {
-            // Using a custom visual cue instead of alert()
             document.getElementById('projectAchievement').style.borderColor = '#ef5675';
             setTimeout(() => document.getElementById('projectAchievement').style.borderColor = '', 2000);
             return;
         }
+
+        // Check for API Key presence
+        if (apiKey === "YOUR_KEY_HERE" || apiKey === "") {
+             document.getElementById('outputStandard').textContent = 'Setup Error';
+             document.getElementById('outputDeterminant').textContent = 'Setup Error';
+             document.getElementById('outputSnippet').textContent = 'API Key is missing. Please edit the index.html file and replace "YOUR_KEY_HERE" with your valid Gemini API Key.';
+             outputDiv.classList.remove('hidden');
+             return;
+        }
+
 
         // Set loading state
         button.disabled = true;
@@ -222,10 +232,12 @@
             outputDiv.classList.remove('hidden');
 
         } catch (error) {
-            console.error("Error generating insights:", error);
-            document.getElementById('outputStandard').textContent = 'Error';
-            document.getElementById('outputDeterminant').textContent = 'Error';
-            document.getElementById('outputSnippet').textContent = 'An error occurred during analysis. Please check the console for details and try again with a slightly different input.';
+            // Display specific error message to the user
+            const displayError = error.message.includes("400") ? "API Key or request format error. Check the console for details." : error.message.slice(0, 100) + '... (See Console for full detail)';
+            
+            document.getElementById('outputStandard').textContent = 'API Call Failed';
+            document.getElementById('outputDeterminant').textContent = 'Debug Required';
+            document.getElementById('outputSnippet').textContent = `The Gemini API call failed. Cause: ${displayError}. Please ensure your API Key is correctly entered in the index.html file.`;
             outputDiv.classList.remove('hidden');
         } finally {
             // Revert loading state
