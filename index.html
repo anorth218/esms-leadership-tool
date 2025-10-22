@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Leadership in Action @ ÉSMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+        }
+        .loading-spinner {
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #7a5195;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-10 p-6 bg-white rounded-xl shadow-lg border-t-4 border-[#003f5c]">
+            <h1 class="text-3xl md:text-4xl font-bold text-[#003f5c] mb-2">💡 My Leadership in Action @ ÉSMS</h1>
+            <p class="text-lg text-gray-600">Translate your project achievements into high-impact statements on your practice, mapped to our Leadership Standards and School Development Determinants.</p>
+        </header>
+
+        <!-- Input and Action Section -->
+        <section class="bg-white p-8 rounded-xl shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold text-[#7a5195] mb-6 border-b pb-2">1. Describe Your Achievement</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="projectName" class="block text-sm font-medium text-gray-700 mb-1">Project Name (Optional, for context)</label>
+                    <input id="projectName" type="text" placeholder="e.g., The GOAT Project" class="p-3 w-full border border-gray-300 rounded-lg focus:ring-[#7a5195] focus:border-[#7a5195] transition duration-150" value="The GOAT Project Data Initiative">
+                </div>
+                
+                <div>
+                    <label for="projectAchievement" class="block text-sm font-medium text-gray-700 mb-1">Specific Achievement (Be detailed!)</label>
+                    <textarea id="projectAchievement" placeholder="Example: Led a small team to develop and implement a school-wide digital assessment tool, resulting in a 15% increase in timely feedback for Grade 9 math students." rows="4" class="p-3 w-full border border-gray-300 rounded-lg focus:ring-[#7a5195] focus:border-[#7a5195] transition duration-150">Led the development and launch of a new community outreach program that integrated local elders into our Grade 5 curriculum, boosting student-reported sense of belonging by 20%.</textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-center mt-8">
+                <button id="generateInsightsButton" class="flex items-center space-x-3 bg-[#ef5675] hover:bg-[#bc5090] text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.02] disabled:opacity-50" onclick="generateInterviewPrep(event)">
+                    <span id="buttonText" class="text-lg">Analyze & Generate Insights</span>
+                    <div id="loadingSpinner" class="loading-spinner hidden"></div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Result Output Section -->
+        <section id="resultOutput" class="mt-8 p-8 bg-green-50 rounded-xl shadow-lg border-l-4 border-[#7a5195] hidden">
+            <h2 class="text-2xl font-semibold text-[#003f5c] mb-6">2. Your Leadership Profile</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Official Standard Output -->
+                <div class="p-4 bg-white rounded-lg shadow border-l-4 border-[#7a5195]">
+                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Primary Official Standard of Practice</p>
+                    <p id="outputStandard" class="text-xl font-bold text-[#7a5195] mt-1">Analyzing...</p>
+                </div>
+                
+                <!-- School Determinant Output -->
+                <div class="p-4 bg-white rounded-lg shadow border-l-4 border-[#ef5675]">
+                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">School Development Determinant</p>
+                    <p id="outputDeterminant" class="text-xl font-bold text-[#ef5675] mt-1">Analyzing...</p>
+                </div>
+            </div>
+
+            <!-- Interview Snippet Output -->
+            <div class="mt-4 p-6 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p class="font-bold text-lg text-gray-800 mb-2 flex items-center">
+                    <span class="text-2xl mr-2">💡</span> High-Impact Professional Statement:
+                </p>
+                <p id="outputSnippet" class="italic text-gray-800 leading-relaxed"></p>
+            </div>
+        </section>
+
+    </main>
+
+<script>
+    // Constants for Gemini API
+    const apiKey = ""; // Canvas will automatically populate this
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+    // Define the official standards and determinants for the LLM's context
+    // Official NL Standards of Practice (CAMET/NL DEDCD, 2020)
+    const allStandards = [
+        "Leading for Learning and Managing Change", 
+        "Engaging Families and Communities", 
+        "Shaping a Safe, Inclusive and Positive Learning Environment", 
+        "Building the Leadership Potential of Others", 
+        "Demonstrating Professionalism", 
+        "Promoting Health and Well-being", 
+        "Managing School Operations and Resources"
+    ];
+    // School Development Determinants
+    const allDeterminants = [
+        "A Culture of Achievement and Success", 
+        "Data Informed Decisions", 
+        "Collaboration", 
+        "A Community of Care and Safety", 
+        "Teaching and Learning", 
+        "Engagement with Parents", 
+        "Creative Resources"
+    ];
+
+    /**
+     * Handles exponential backoff and retries for the Gemini API call.
+     */
+    async function callGeminiApi(payload, maxRetries = 5) {
+        let lastError = null;
+        for (let i = 0; i < maxRetries; i++) {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!jsonText) {
+                     throw new Error("Received an empty or malformed response from the API.");
+                }
+
+                // The model sometimes wraps the JSON in markdown code blocks, strip them if present
+                const cleanJsonText = jsonText.replace(/```json\n|```/g, '').trim();
+
+                return JSON.parse(cleanJsonText);
+
+            } catch (error) {
+                lastError = error;
+                console.error(`Attempt ${i + 1} failed:`, error);
+                // Wait longer with each retry (exponential backoff with jitter)
+                const delay = Math.pow(2, i) * 1000 + (Math.random() * 500); 
+                if (i < maxRetries - 1) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+        throw new Error(`Gemini API failed after ${maxRetries} attempts. Last error: ${lastError.message}`);
+    }
+
+    /**
+     * Generates interview preparation insights using the Gemini API based on user input.
+     */
+    async function generateInterviewPrep(event) {
+        event.preventDefault();
+        const projectName = document.getElementById('projectName').value.trim();
+        const achievement = document.getElementById('projectAchievement').value.trim();
+        const button = document.getElementById('generateInsightsButton');
+        const buttonText = document.getElementById('buttonText');
+        const spinner = document.getElementById('loadingSpinner');
+        const outputDiv = document.getElementById('resultOutput');
+        
+        // Reset output state
+        outputDiv.classList.add('hidden');
+        document.getElementById('outputStandard').textContent = 'Analyzing...';
+        document.getElementById('outputDeterminant').textContent = 'Analyzing...';
+        document.getElementById('outputSnippet').textContent = '';
+
+        if (!achievement) {
+            // Using a custom visual cue instead of alert()
+            document.getElementById('projectAchievement').style.borderColor = '#ef5675';
+            setTimeout(() => document.getElementById('projectAchievement').style.borderColor = '', 2000);
+            return;
+        }
+
+        // Set loading state
+        button.disabled = true;
+        buttonText.textContent = 'Analyzing...';
+        spinner.classList.remove('hidden');
+
+        try {
+            const systemPrompt = `You are a school leadership interview coach and strategic planning advisor. Your task is to analyze a staff member's project achievement and map it to the Newfoundland and Labrador school framework.
+                1. Identify the SINGLE most relevant Official Standard of Practice for School-based Administrators from the list: ${allStandards.join(', ')}.
+                2. Identify the SINGLE most relevant School Development Determinant from the school's DLIF list: ${allDeterminants.join(', ')}.
+                3. Generate a concise, high-impact, first-person statement (maximum 3 sentences) suitable for a leadership job interview, directly referencing both the Standard and Determinant identified. The tone should be professional and assertive.
+                
+                Respond ONLY with a JSON object that adheres strictly to the provided schema.`;
+
+            const userQuery = `Project Name: ${projectName}. Specific Achievement: ${achievement}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "primaryStandard": { "type": "STRING", "description": "The primary official administrative standard demonstrated (e.g., Engaging Families and Communities)." },
+                            "primaryDeterminant": { "type": "STRING", "description": "The primary determinant of school development impacted (e.g., Engagement with Parents)." },
+                            "interviewSnippet": { "type": "STRING", "description": "A high-impact, professional statement suitable for a leadership interview." }
+                        },
+                        "propertyOrdering": ["primaryStandard", "primaryDeterminant", "interviewSnippet"]
+                    }
+                }
+            };
+            
+            const result = await callGeminiApi(payload);
+
+            // Update UI with results
+            document.getElementById('outputStandard').textContent = result.primaryStandard;
+            document.getElementById('outputDeterminant').textContent = result.primaryDeterminant;
+            document.getElementById('outputSnippet').textContent = result.interviewSnippet;
+            outputDiv.classList.remove('hidden');
+
+        } catch (error) {
+            console.error("Error generating insights:", error);
+            document.getElementById('outputStandard').textContent = 'Error';
+            document.getElementById('outputDeterminant').textContent = 'Error';
+            document.getElementById('outputSnippet').textContent = 'An error occurred during analysis. Please check the console for details and try again with a slightly different input.';
+            outputDiv.classList.remove('hidden');
+        } finally {
+            // Revert loading state
+            button.disabled = false;
+            buttonText.textContent = 'Analyze & Generate Insights';
+            spinner.classList.add('hidden');
+        }
+    }
+</script>
+</body>
+</html>
