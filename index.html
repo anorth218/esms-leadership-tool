@@ -21,7 +21,7 @@
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
-            100% { transform rotate(360deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -89,7 +89,7 @@
 
 <script>
     // CRITICAL: You MUST replace "YOUR_KEY_HERE" with your actual Gemini API Key from Google AI Studio.
-    const apiKey = "AIzaSyAEOJjKM4OyV4sEUX71zuwgMlXHemiKdIY"; 
+    const apiKey = "YOUR_KEY_HERE"; 
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
     // Define the official standards and determinants for the LLM's context
@@ -103,15 +103,15 @@
         "Promoting Health and Well-being", 
         "Managing School Operations and Resources"
     ];
-    // School Development Determinants
+    // CORRECTED School Development Determinants (7 Pillars of School Development)
     const allDeterminants = [
-        "A Culture of Achievement and Success", 
-        "Data Informed Decisions", 
-        "Collaboration", 
-        "A Community of Care and Safety", 
-        "Teaching and Learning", 
-        "Engagement with Parents", 
-        "Creative Resources"
+        "Instructional Practice",
+        "Evidence-based Decision Making",
+        "Collective Efficacy",
+        "Assessment Practice",
+        "Optimal Learning Environments",
+        "Teachers as Learners",
+        "Wellness and Positive Relationships"
     ];
 
     /**
@@ -182,7 +182,7 @@
         }
 
         // Check for API Key presence
-        if (apiKey === "YOUR_KEY_HERE" || apiKey === "") {
+        if (apiKey === "AIzaSyAEOJjKM4OyV4sEUX71zuwgMlXHemiKdIY" || apiKey === "") {
              document.getElementById('outputStandard').textContent = 'Setup Error';
              document.getElementById('outputDeterminant').textContent = 'Setup Error';
              document.getElementById('outputSnippet').textContent = 'API Key is missing. Please edit the index.html file and replace "YOUR_KEY_HERE" with your valid Gemini API Key.';
@@ -199,7 +199,7 @@
         try {
             const systemPrompt = `You are a school leadership interview coach and strategic planning advisor. Your task is to analyze a staff member's project achievement and map it to the Newfoundland and Labrador school framework.
                 1. Identify the SINGLE most relevant Official Standard of Practice for School-based Administrators from the list: ${allStandards.join(', ')}.
-                2. Identify the SINGLE most relevant School Development Determinant from the school's DLIF list: ${allDeterminants.join(', ')}.
+                2. Identify the SINGLE most relevant School Development Determinant (7 Pillars) from the school's strategic list: ${allDeterminants.join(', ')}.
                 3. Generate a concise, high-impact, first-person statement (maximum 3 sentences) suitable for a leadership job interview, directly referencing both the Standard and Determinant identified. The tone should be professional and assertive.
                 
                 Respond ONLY with a JSON object that adheres strictly to the provided schema.`;
@@ -215,7 +215,7 @@
                         type: "OBJECT",
                         properties: {
                             "primaryStandard": { "type": "STRING", "description": "The primary official administrative standard demonstrated (e.g., Engaging Families and Communities)." },
-                            "primaryDeterminant": { "type": "STRING", "description": "The primary determinant of school development impacted (e.g., Engagement with Parents)." },
+                            "primaryDeterminant": { "type": "STRING", "description": "The primary determinant of school development impacted (e.g., Evidence-based Decision Making)." },
                             "interviewSnippet": { "type": "STRING", "description": "A high-impact, professional statement suitable for a leadership interview." }
                         },
                         "propertyOrdering": ["primaryStandard", "primaryDeterminant", "interviewSnippet"]
