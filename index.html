@@ -90,7 +90,9 @@
 <script>
     // CRITICAL: Gemini API Key inserted for operational use.
     const apiKey = "AIzaSyA0Oa0QnrlpNOKX19RvsblK0xEumhyRfR8"; 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+    const modelName = "gemini-2.5-flash";
+const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+
 
     // Define the official standards and determinants for the LLM's context
     // Official NL Standards of Practice (CAMET/NL DEDCD, 2020)
