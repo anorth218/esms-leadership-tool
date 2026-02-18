@@ -1,246 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Leadership in Action @ ESMS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f7f7;
-        }
-        .loading-spinner {
-            border: 4px solid #e0e0e0;
-            border-top: 4px solid #7a5195;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Leadership in Action @ ÉSMS</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f7f7f7; }
+    .loading-spinner {
+      border: 4px solid #e0e0e0;
+      border-top: 4px solid #7a5195;
+      border-radius: 50%;
+      width: 24px; height: 24px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+    .chip {
+      display: inline-flex; align-items: center;
+      padding: .35rem .6rem; border-radius: 9999px;
+      font-weight: 600; font-size: .875rem;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+  </style>
 </head>
+
 <body>
-    <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-        
-        <!-- Header Section -->
-        <header class="text-center mb-10 p-6 bg-white rounded-xl shadow-lg border-t-4 border-[#003f5c]">
-            <h1 class="text-3xl md:text-4xl font-bold text-[#003f5c] mb-2">💡 My Leadership in Action @ ÉSMS</h1>
-            <p class="text-lg text-gray-600">Translate your project achievements into high-impact statements on your practice, mapped to our Leadership Standards and School Development Determinants.</p>
-        </header>
+<main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
 
-        <!-- Input and Action Section -->
-        <section class="bg-white p-8 rounded-xl shadow-lg mb-8">
-            <h2 class="text-2xl font-semibold text-[#7a5195] mb-6 border-b pb-2">1. Describe Your Achievement</h2>
-            
-            <div class="space-y-4">
-                <div>
-                    <label for="projectName" class="block text-sm font-medium text-gray-700 mb-1">Project Name (Optional, for context)</label>
-                    <input id="projectName" type="text" placeholder="e.g., The GOAT Project" class="p-3 w-full border border-gray-300 rounded-lg focus:ring-[#7a5195] focus:border-[#7a5195] transition duration-150" value="The GOAT Project Data Initiative">
-                </div>
-                
-                <div>
-                    <label for="projectAchievement" class="block text-sm font-medium text-gray-700 mb-1">Specific Achievement (Be detailed!)</label>
-                    <textarea id="projectAchievement" placeholder="Example: Led a small team to develop and implement a school-wide digital assessment tool, resulting in a 15% increase in timely feedback for Grade 9 math students." rows="4" class="p-3 w-full border border-gray-300 rounded-lg focus:ring-[#7a5195] focus:border-[#7a5195] transition duration-150">Led the development and launch of a new community outreach program that integrated local elders into our Grade 5 curriculum, boosting student-reported sense of belonging by 20%.</textarea>
-                </div>
-            </div>
+  <!-- Header -->
+  <header class="text-center mb-10 p-6 bg-white rounded-xl shadow-lg border-t-4 border-[#003f5c]">
+    <h1 class="text-3xl md:text-4xl font-bold text-[#003f5c] mb-2">💡 My Leadership in Action @ ÉSMS</h1>
+    <p class="text-lg text-gray-600">
+      Translate your project achievements into high-impact statements on your practice, mapped to our Leadership Standards (actions) and School Development Determinants (impact).
+    </p>
+    <p class="text-sm text-gray-500 mt-2">
+      Private per user: exports download to your device (you can upload to Drive if you wish).
+    </p>
+  </header>
 
-            <div class="flex justify-center mt-8">
-                <button id="generateInsightsButton" class="flex items-center space-x-3 bg-[#ef5675] hover:bg-[#bc5090] text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.02] disabled:opacity-50" onclick="generateInterviewPrep(event)">
-                    <span id="buttonText" class="text-lg">Analyze & Generate Insights</span>
-                    <div id="loadingSpinner" class="loading-spinner hidden"></div>
-                </button>
-            </div>
-        </section>
+  <!-- Input -->
+  <section class="bg-white p-8 rounded-xl shadow-lg mb-8">
+    <h2 class="text-2xl font-semibold text-[#7a5195] mb-6 border-b pb-2">1. Describe Your Achievement</h2>
 
-        <!-- Result Output Section -->
-        <section id="resultOutput" class="mt-8 p-8 bg-green-50 rounded-xl shadow-lg border-l-4 border-[#7a5195] hidden">
-            <h2 class="text-2xl font-semibold text-[#003f5c] mb-6">2. Your Leadership Profile</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <!-- Official Standard Output -->
-                <div class="p-4 bg-white rounded-lg shadow border-l-4 border-[#7a5195]">
-                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Primary Official Standard of Practice</p>
-                    <p id="outputStandard" class="text-xl font-bold text-[#7a5195] mt-1">Analyzing...</p>
-                </div>
-                
-                <!-- School Determinant Output -->
-                <div class="p-4 bg-white rounded-lg shadow border-l-4 border-[#ef5675]">
-                    <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">School Development Determinant</p>
-                    <p id="outputDeterminant" class="text-xl font-bold text-[#ef5675] mt-1">Analyzing...</p>
-                </div>
-            </div>
+    <div class="space-y-4">
+      <div>
+        <label for="projectName" class="block text-sm font-medium text-gray-700 mb-1">Project Name (Optional)</label>
+        <input id="projectName" type="text"
+               placeholder="e.g., GOAT Awards Data Initiative"
+               class="p-3 w-full border border-gray-300 rounded-lg focus:ring-[#7a5195] focus:border-[#7a5195] transition duration-150"
+               value="The GOAT Project Data Initiative">
+      </div>
 
-            <!-- Interview Snippet Output -->
-            <div class="mt-4 p-6 bg-yellow-50 rounded-lg border border-yellow-200">
-                <p class="font-bold text-lg text-gray-800 mb-2 flex items-center">
-                    <span class="text-2xl mr-2">💡</span> High-Impact Professional Statement:
-                </p>
-                <p id="outputSnippet" class="italic text-gray-800 leading-relaxed"></p>
-            </div>
-        </section>
+      <div>
+        <label for="projectAchievement" class="block text-sm font-medium text-gray-700 mb-1">Specific Achievement (Be detailed!)</label>
+        <textarea id="projectAchievement" rows="5"
+          placeholder="Example: Led a small team to develop and implement a school-wide digital assessment tool..."
+          class="p-3 w-full border border-gray-300 rounded-lg focus:ring-[#7a5195] focus:border-[#7a5195] transition duration-150">Led the development and launch of a new community outreach program that integrated local elders into our Grade 5 curriculum, boosting student-reported sense of belonging by 20%.</textarea>
+        <p class="text-xs text-gray-500 mt-1">Tip: name who, what changed, and what evidence you noticed (data, student voice, observation, family feedback).</p>
+      </div>
+    </div>
 
-    </main>
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 mt-8">
+      <button id="generateInsightsButton"
+              class="flex items-center space-x-3 bg-[#ef5675] hover:bg-[#bc5090] text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-[1.02] disabled:opacity-50"
+              onclick="generateInsights(event)">
+        <span id="buttonText" class="text-lg">Analyze & Generate Insights</span>
+        <div id="loadingSpinner" class="loading-spinner hidden"></div>
+      </button>
+
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-full shadow transition duration-200"
+              onclick="clearForm(event)">
+        Clear
+      </button>
+    </div>
+
+    <div id="statusBar" class="mt-4 text-center text-sm text-gray-600"></div>
+  </section>
+
+  <!-- Results -->
+  <section id="resultOutput" class="mt-8 p-8 bg-green-50 rounded-xl shadow-lg border-l-4 border-[#7a5195] hidden">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <h2 class="text-2xl font-semibold text-[#003f5c]">2. Your Leadership Profile</h2>
+
+      <div class="flex flex-wrap gap-2">
+        <button class="bg-[#003f5c] hover:bg-[#002f46] text-white font-semibold py-2 px-4 rounded-lg shadow"
+                onclick="copyResults()">
+          Copy
+        </button>
+        <button class="bg-[#7a5195] hover:bg-[#694383] text-white font-semibold py-2 px-4 rounded-lg shadow"
+                onclick="downloadAsWord()">
+          Download Word
+        </button>
+        <button class="bg-[#ef5675] hover:bg-[#bc5090] text-white font-semibold py-2 px-4 rounded-lg shadow"
+                onclick="downloadAsPDF()">
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="p-4 bg-white rounded-lg shadow border-l-4 border-[#7a5195]">
+        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Leadership Standard(s) demonstrated</p>
+        <div id="outputStandards" class="mt-2"></div>
+      </div>
+
+      <div class="p-4 bg-white rounded-lg shadow border-l-4 border-[#ef5675]">
+        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Areas of impact (Determinants)</p>
+        <div id="outputDeterminants" class="mt-2"></div>
+      </div>
+    </div>
+
+    <div class="mt-4 p-6 bg-yellow-50 rounded-lg border border-yellow-200">
+      <p class="font-bold text-lg text-gray-800 mb-2 flex items-center">
+        <span class="text-2xl mr-2">💡</span> High-Impact Professional Statement
+      </p>
+      <p id="outputSnippet" class="italic text-gray-800 leading-relaxed"></p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      <div class="p-5 bg-white rounded-lg shadow border border-gray-200">
+        <p class="font-bold text-gray-800 mb-2">Evidence I Can Name</p>
+        <ul id="outputEvidence" class="list-disc ml-6 text-gray-700 space-y-1"></ul>
+      </div>
+
+      <div class="p-5 bg-white rounded-lg shadow border border-gray-200">
+        <p class="font-bold text-gray-800 mb-2">Possible Next Step</p>
+        <p id="outputNextStep" class="text-gray-700"></p>
+      </div>
+    </div>
+
+    <div class="mt-6 text-xs text-gray-500">
+      Usage analytics (private): This tool tracks only anonymous counts in your browser (e.g., “analyses run”), not names or text.
+    </div>
+  </section>
+
+</main>
 
 <script>
-    // CRITICAL: Gemini API Key inserted for operational use.
-    const apiKey = "AIzaSyA0Oa0QnrlpNOKX19RvsblK0xEumhyRfR8"; 
-    const modelName = "gemini-2.5-flash";
-const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
+  /******************************************************************
+   * CONFIG
+   * NOTE: For strongest security, use a proxy endpoint. Since Apps Script
+   * is blocked for your district, this remains client-side.
+   * Rotate your key if it was ever shared.
+   ******************************************************************/
+  const apiKey = "PASTE_YOUR_KEY_HERE"; // <-- replace on GitHub (not here)
+  const modelName = "gemini-2.5-flash";
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
 
+  const allStandards = [
+    "Leading for Learning and Managing Change",
+    "Engaging Families and Communities",
+    "Shaping a Safe, Inclusive and Positive Learning Environment",
+    "Building the Leadership Potential of Others",
+    "Demonstrating Professionalism",
+    "Promoting Health and Well-being",
+    "Managing School Operations and Resources"
+  ];
 
+  const allDeterminants = [
+    "Instructional Practice",
+    "Evidence-based Decision Making",
+    "Collective Efficacy",
+    "Assessment Practice",
+    "Optimal Learning Environments",
+    "Teachers as Learners",
+    "Wellness and Positive Relationships"
+  ];
 
-    // Define the official standards and determinants for the LLM's context
-    // Official NL Standards of Practice (CAMET/NL DEDCD, 2020)
-    const allStandards = [
-        "Leading for Learning and Managing Change", 
-        "Engaging Families and Communities", 
-        "Shaping a Safe, Inclusive and Positive Learning Environment", 
-        "Building the Leadership Potential of Others", 
-        "Demonstrating Professionalism", 
-        "Promoting Health and Well-being", 
-        "Managing School Operations and Resources"
-    ];
-    // CORRECTED School Development Determinants (7 Pillars of School Development)
-    const allDeterminants = [
-        "Instructional Practice",
-        "Evidence-based Decision Making",
-        "Collective Efficacy",
-        "Assessment Practice",
-        "Optimal Learning Environments",
-        "Teachers as Learners",
-        "Wellness and Positive Relationships"
-    ];
+  /******************************************************************
+   * PRIVACY-SAFE USAGE ANALYTICS (local-only)
+   ******************************************************************/
+  const ANALYTICS_KEY = "esms_leadership_tool_analytics_v1";
+  function getAnalytics_() {
+    try { return JSON.parse(localStorage.getItem(ANALYTICS_KEY) || "{}"); }
+    catch { return {}; }
+  }
+  function bumpAnalytics_(key) {
+    const a = getAnalytics_();
+    a[key] = (a[key] || 0) + 1;
+    a["lastUsedAt"] = new Date().toISOString();
+    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(a));
+  }
 
-    /**
-     * Handles exponential backoff and retries for the Gemini API call.
-     */
-    async function callGeminiApi(payload, maxRetries = 5) {
-        let lastError = null;
-        for (let i = 0; i < maxRetries; i++) {
-            try {
-                const response = await fetch(apiUrl, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'x-goog-api-key': apiKey
-  },
-  body: JSON.stringify(payload)
-});
+  /******************************************************************
+   * UI HELPERS
+   ******************************************************************/
+  function setStatus(msg, tone="neutral") {
+    const el = document.getElementById("statusBar");
+    el.textContent = msg || "";
+    el.className = "mt-4 text-center text-sm " + (
+      tone === "error" ? "text-red-700" :
+      tone === "warn"  ? "text-amber-700" :
+      tone === "ok"    ? "text-green-700" :
+      "text-gray-600"
+    );
+  }
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`API call failed with status: ${response.status}. Response: ${errorText}`);
-                }
+  function escapeHtml(str) {
+    return (str || "").replace(/[&<>"']/g, (m) => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+    }[m]));
+  }
 
-                const result = await response.json();
-                
-                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!jsonText) {
-                     throw new Error("Received an empty or malformed response from the API.");
-                }
+  function renderChips(containerId, items, colorHex) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = "";
+    if (!items || !items.length) {
+      el.innerHTML = `<p class="text-gray-600">—</p>`;
+      return;
+    }
+    const wrap = document.createElement("div");
+    wrap.className = "flex flex-wrap gap-2";
+    items.forEach(s => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.style.backgroundColor = colorHex + "22";
+      chip.style.color = colorHex;
+      chip.style.border = "1px solid " + colorHex + "55";
+      chip.textContent = s;
+      wrap.appendChild(chip);
+    });
+    el.appendChild(wrap);
+  }
 
-                // The model sometimes wraps the JSON in markdown code blocks, strip them if present
-                const cleanJsonText = jsonText.replace(/```json\n|```/g, '').trim();
+  function renderEvidence(list) {
+    const ul = document.getElementById("outputEvidence");
+    ul.innerHTML = "";
+    (list || []).slice(0, 6).forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      ul.appendChild(li);
+    });
+    if (!ul.children.length) {
+      const li = document.createElement("li");
+      li.textContent = "—";
+      ul.appendChild(li);
+    }
+  }
 
-                return JSON.parse(cleanJsonText);
+  function clearForm(event) {
+    event.preventDefault();
+    document.getElementById("projectName").value = "";
+    document.getElementById("projectAchievement").value = "";
+    setStatus("");
+    document.getElementById("resultOutput").classList.add("hidden");
+  }
 
-            } catch (error) {
-                lastError = error;
-                // Wait longer with each retry (exponential backoff with jitter)
-                const delay = Math.pow(2, i) * 1000 + (Math.random() * 500); 
-                if (i < maxRetries - 1) {
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                }
-            }
+  /******************************************************************
+   * EXPORT HELPERS (Copy / Word / PDF)
+   ******************************************************************/
+  function safeFilename_(name) {
+    const cleaned = (name || "Leadership-Reflection")
+      .trim()
+      .replace(/\s+/g, " ")
+      .replace(/[\\/:*?"<>|]+/g, "")   // illegal filename chars
+      .replace(/[^\w\s\-&()+.,']/g, ""); // keep it reasonable
+    return (cleaned || "Leadership-Reflection").slice(0, 80);
+  }
+
+  function getResultsData_() {
+    const project = (document.getElementById("projectName")?.value || "").trim();
+    const achievement = (document.getElementById("projectAchievement")?.value || "").trim();
+    const standards = Array.from(document.querySelectorAll("#outputStandards .chip")).map(x => x.textContent);
+    const determinants = Array.from(document.querySelectorAll("#outputDeterminants .chip")).map(x => x.textContent);
+    const statement = (document.getElementById("outputSnippet")?.textContent || "").trim();
+    const nextStep = (document.getElementById("outputNextStep")?.textContent || "").trim();
+    const evidence = Array.from(document.querySelectorAll("#outputEvidence li")).map(x => x.textContent).filter(x => x && x !== "—");
+
+    if (!statement) return null;
+
+    return { project, achievement, standards, determinants, statement, evidence, nextStep };
+  }
+
+  function getResultsText_() {
+    const d = getResultsData_();
+    if (!d) return null;
+
+    return [
+      `Project: ${d.project || "(not provided)"}`,
+      `Achievement: ${d.achievement}`,
+      ``,
+      `Standards (Actions): ${d.standards.length ? d.standards.join("; ") : "—"}`,
+      `Determinants (Impact): ${d.determinants.length ? d.determinants.join("; ") : "—"}`,
+      ``,
+      `High-Impact Professional Statement:`,
+      d.statement,
+      ``,
+      `Evidence I Can Name:`,
+      d.evidence.length ? d.evidence.map(x => `- ${x}`).join("\n") : "—",
+      ``,
+      `Next Step:`,
+      d.nextStep || "—"
+    ].join("\n");
+  }
+
+  function getResultsHtml_() {
+    const d = getResultsData_();
+    if (!d) return null;
+
+    const standardsHtml = d.standards.length ? d.standards.map(s => `<li>${escapeHtml(s)}</li>`).join("") : `<li>—</li>`;
+    const determinantsHtml = d.determinants.length ? d.determinants.map(s => `<li>${escapeHtml(s)}</li>`).join("") : `<li>—</li>`;
+    const evidenceHtml = d.evidence.length ? d.evidence.map(e => `<li>${escapeHtml(e)}</li>`).join("") : `<li>—</li>`;
+
+    return `
+      <div class="wrap">
+        <h1>My Leadership in Action</h1>
+        ${d.project ? `<h2>${escapeHtml(d.project)}</h2>` : `<h2>Leadership Reflection</h2>`}
+
+        <div class="section">
+          <h3>Achievement Summary</h3>
+          <p>${escapeHtml(d.achievement)}</p>
+        </div>
+
+        <div class="section two-col">
+          <div>
+            <h3>Leadership Standards (Actions)</h3>
+            <ul>${standardsHtml}</ul>
+          </div>
+          <div>
+            <h3>Areas of Impact (Determinants)</h3>
+            <ul>${determinantsHtml}</ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>High-Impact Professional Statement</h3>
+          <p class="italic">${escapeHtml(d.statement)}</p>
+        </div>
+
+        <div class="section">
+          <h3>Evidence I Can Name</h3>
+          <ul>${evidenceHtml}</ul>
+        </div>
+
+        <div class="section">
+          <h3>Next Step</h3>
+          <p>${escapeHtml(d.nextStep || "—")}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  async function copyResults() {
+    const text = getResultsText_();
+    if (!text) { setStatus("Analyze first before copying.", "warn"); return; }
+    try {
+      await navigator.clipboard.writeText(text);
+      bumpAnalytics_("copies");
+      setStatus("Copied to clipboard ✅", "ok");
+    } catch {
+      setStatus("Copy blocked by browser permissions. Try Download Word/PDF.", "warn");
+    }
+  }
+
+  function downloadAsWord() {
+    const htmlBody = getResultsHtml_();
+    if (!htmlBody) { setStatus("Analyze first before downloading.", "warn"); return; }
+
+    const d = getResultsData_();
+    const base = safeFilename_(d?.project || "Leadership-Reflection");
+    const filename = `${base}.doc`;
+
+    const css = `
+      body { font-family: Arial, sans-serif; padding: 36px; color: #1f2937; }
+      h1 { color:#003f5c; font-size: 24px; margin: 0 0 8px 0; }
+      h2 { color:#003f5c; font-size: 16px; margin: 0 0 18px 0; font-weight: 700; }
+      h3 { color:#111827; font-size: 14px; margin: 18px 0 8px; }
+      p, li { font-size: 12px; line-height: 1.5; }
+      .italic { font-style: italic; background: #fff7ed; padding: 10px 12px; border: 1px solid #fde68a; border-radius: 8px; }
+      ul { margin: 6px 0 0 18px; }
+      .two-col { display: flex; gap: 24px; }
+      .two-col > div { flex: 1; }
+      .section { margin-top: 10px; }
+    `;
+
+    const html = `
+      <html>
+        <head><meta charset="utf-8"><title>${escapeHtml(base)}</title><style>${css}</style></head>
+        <body>${htmlBody}</body>
+      </html>
+    `;
+
+    const blob = new Blob(["\ufeff", html], { type: "application/msword" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    bumpAnalytics_("downloadsWord");
+    setStatus("Word document downloaded ✅", "ok");
+  }
+
+  function downloadAsPDF() {
+    const htmlBody = getResultsHtml_();
+    if (!htmlBody) { setStatus("Analyze first before downloading.", "warn"); return; }
+
+    const d = getResultsData_();
+    const base = safeFilename_(d?.project || "Leadership-Reflection");
+
+    // Open printable window; user selects "Save as PDF"
+    const w = window.open("", "_blank");
+    const css = `
+      @page { margin: 18mm; }
+      body { font-family: Arial, sans-serif; padding: 0; color: #1f2937; }
+      h1 { color:#003f5c; font-size: 22px; margin: 0 0 8px 0; }
+      h2 { color:#003f5c; font-size: 15px; margin: 0 0 16px 0; font-weight: 700; }
+      h3 { color:#111827; font-size: 13px; margin: 16px 0 6px; }
+      p, li { font-size: 11.5px; line-height: 1.5; }
+      .italic { font-style: italic; background: #fff7ed; padding: 10px 12px; border: 1px solid #fde68a; border-radius: 8px; }
+      ul { margin: 6px 0 0 18px; }
+      .two-col { display: flex; gap: 18px; }
+      .two-col > div { flex: 1; }
+      .section { margin-top: 10px; }
+      .wrap { max-width: 900px; }
+      .footer { margin-top: 22px; font-size: 10px; color: #6b7280; }
+    `;
+
+    w.document.write(`
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>${escapeHtml(base)}</title>
+          <style>${css}</style>
+        </head>
+        <body>
+          ${htmlBody}
+          <div class="footer">Tip: In the print dialog, choose “Save as PDF”.</div>
+        </body>
+      </html>
+    `);
+    w.document.close();
+    w.focus();
+
+    bumpAnalytics_("downloadsPdf");
+    setStatus("Opening print dialog… choose “Save as PDF”.", "ok");
+    w.print();
+  }
+
+  /******************************************************************
+   * GEMINI CALL (with quota-burst messaging)
+   ******************************************************************/
+  async function callGeminiApi(payload, maxRetries = 5) {
+    let lastError = null;
+
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey
+          },
+          body: JSON.stringify(payload)
+        });
+
+        // Quota / busy handling (429 / 503)
+        if (response.status === 429 || response.status === 503) {
+          bumpAnalytics_("busyHits");
+          const waitSec = Math.min(8, 2 + i * 2);
+          throw new Error(`TOOL_BUSY|${waitSec}`);
         }
-        throw new Error(`Gemini API failed after ${maxRetries} attempts. Last error: ${lastError ? lastError.message : 'Unknown network error.'}`);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`API_ERROR|${response.status}|${errorText}`);
+        }
+
+        const result = await response.json();
+
+        const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!jsonText) throw new Error("EMPTY_RESPONSE");
+
+        const cleanJsonText = jsonText.replace(/```json\n|```/g, "").trim();
+        return JSON.parse(cleanJsonText);
+
+      } catch (err) {
+        lastError = err;
+
+        // If busy, show subtle message and retry with backoff
+        const msg = String(err?.message || "");
+        if (msg.startsWith("TOOL_BUSY|")) {
+          const waitSec = Number(msg.split("|")[1] || "4");
+          setStatus(`Tool is busy right now — please try again in a few moments. (Retrying…)`, "warn");
+          await new Promise(r => setTimeout(r, waitSec * 1000));
+          continue;
+        }
+
+        // Other errors: exponential backoff a couple of times, then fail
+        const delay = Math.pow(2, i) * 800 + (Math.random() * 400);
+        if (i < maxRetries - 1) {
+          await new Promise(r => setTimeout(r, delay));
+        }
+      }
     }
 
-    /**
-     * Generates interview preparation insights using the Gemini API based on user input.
-     */
-    async function generateInterviewPrep(event) {
-        event.preventDefault();
-        const projectName = document.getElementById('projectName').value.trim();
-        const achievement = document.getElementById('projectAchievement').value.trim();
-        const button = document.getElementById('generateInsightsButton');
-        const buttonText = document.getElementById('buttonText');
-        const spinner = document.getElementById('loadingSpinner');
-        const outputDiv = document.getElementById('resultOutput');
-        
-        // Reset output state
-        outputDiv.classList.add('hidden');
-        document.getElementById('outputStandard').textContent = 'Analyzing...';
-        document.getElementById('outputDeterminant').textContent = 'Analyzing...';
-        document.getElementById('outputSnippet').textContent = '';
+    // Throw a simplified error at the end
+    throw new Error(lastError ? String(lastError.message || lastError) : "Unknown network error.");
+  }
 
-        if (!achievement) {
-            document.getElementById('projectAchievement').style.borderColor = '#ef5675';
-            setTimeout(() => document.getElementById('projectAchievement').style.borderColor = '', 2000);
-            return;
-        }
+  /******************************************************************
+   * MAIN ACTION
+   ******************************************************************/
+  async function generateInsights(event) {
+    event.preventDefault();
+    setStatus("");
 
-        // Set loading state
-        button.disabled = true;
-        buttonText.textContent = 'Analyzing...';
-        spinner.classList.remove('hidden');
+    const projectName = document.getElementById("projectName").value.trim();
+    const achievement = document.getElementById("projectAchievement").value.trim();
 
-        try {
-            const systemPrompt = `You are a school leadership interview coach and strategic planning advisor. Your task is to analyze a staff member's project achievement and map it to the Newfoundland and Labrador school framework.
-                1. Identify the SINGLE most relevant Official Standard of Practice for School-based Administrators from the list: ${allStandards.join(', ')}.
-                2. Identify the SINGLE most relevant School Development Determinant (7 Pillars) from the school's strategic list: ${allDeterminants.join(', ')}.
-                3. Generate a concise, high-impact, first-person statement (maximum 3 sentences) suitable for a leadership job interview, directly referencing both the Standard and Determinant identified. The tone should be professional and assertive.
-                
-                Respond ONLY with a JSON object that adheres strictly to the provided schema.`;
+    const button = document.getElementById("generateInsightsButton");
+    const buttonText = document.getElementById("buttonText");
+    const spinner = document.getElementById("loadingSpinner");
+    const outputDiv = document.getElementById("resultOutput");
 
-            const userQuery = `Project Name: ${projectName}. Specific Achievement: ${achievement}`;
+    // Reset
+    outputDiv.classList.add("hidden");
+    renderChips("outputStandards", [], "#7a5195");
+    renderChips("outputDeterminants", [], "#ef5675");
+    document.getElementById("outputSnippet").textContent = "";
+    document.getElementById("outputNextStep").textContent = "";
+    document.getElementById("outputEvidence").innerHTML = "";
 
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "primaryStandard": { "type": "STRING", "description": "The primary official administrative standard demonstrated (e.g., Engaging Families and Communities)." },
-                            "primaryDeterminant": { "type": "STRING", "description": "The primary determinant of school development impacted (e.g., Evidence-based Decision Making)." },
-                            "interviewSnippet": { "type": "STRING", "description": "A high-impact, professional statement suitable for a leadership interview." }
-                        },
-                        "propertyOrdering": ["primaryStandard", "primaryDeterminant", "interviewSnippet"]
-                    }
-                }
-            };
-            
-            const result = await callGeminiApi(payload);
-
-            // Update UI with results
-            document.getElementById('outputStandard').textContent = result.primaryStandard;
-            document.getElementById('outputDeterminant').textContent = result.primaryDeterminant;
-            document.getElementById('outputSnippet').textContent = result.interviewSnippet;
-            outputDiv.classList.remove('hidden');
-
-        } catch (error) {
-            // Display generic error message in the UI
-            const displayError = "Could not connect to the analysis service. Please refresh and try again.";
-            
-            document.getElementById('outputStandard').textContent = 'API Call Failed';
-            document.getElementById('outputDeterminant').textContent = 'Debug Required';
-            document.getElementById('outputSnippet').textContent = displayError;
-            outputDiv.classList.remove('hidden');
-        } finally {
-            // Revert loading state
-            button.disabled = false;
-            buttonText.textContent = 'Analyze & Generate Insights';
-            spinner.classList.add('hidden');
-        }
+    if (!achievement) {
+      const ta = document.getElementById("projectAchievement");
+      ta.style.borderColor = "#ef5675";
+      setStatus("Please add a specific achievement before analyzing.", "warn");
+      setTimeout(() => ta.style.borderColor = "", 2000);
+      return;
     }
+    if (!apiKey || apiKey === "PASTE_YOUR_KEY_HERE") {
+      setStatus("API key missing. Paste your key into apiKey in the GitHub code (and keep it restricted).", "error");
+      return;
+    }
+
+    // Loading
+    button.disabled = true;
+    buttonText.textContent = "Analyzing…";
+    spinner.classList.remove("hidden");
+
+    bumpAnalytics_("analysesStarted");
+
+    try {
+      // Refined prompt: choose 1–3 only if justified, otherwise fewer.
+      const systemPrompt = `
+You are a school leadership coach and strategic planning advisor.
+
+Analyze the staff member's achievement and map it to the Newfoundland and Labrador framework.
+
+IMPORTANT selection rule:
+- Choose ONLY the standards/determinants that are clearly evidenced by the achievement.
+- Return 1 item when the fit is clearly singular.
+- Return 2–3 items only when the achievement genuinely spans multiple areas.
+- Do NOT force 3 items.
+
+Tasks:
+1) Select 1–3 Official Standards of Practice from this list:
+${allStandards.join(" | ")}
+
+2) Select 1–3 School Development Determinants (7 Pillars) from this list:
+${allDeterminants.join(" | ")}
+
+3) Provide a short "rationale" (1–2 sentences) explaining why those selections fit.
+
+4) Generate a concise, high-impact first-person professional statement (max 3 sentences) that references at least one selected Standard and one selected Determinant.
+
+5) Provide up to 5 evidence prompts (short bullets).
+
+6) Provide one practical next step.
+
+Return ONLY valid JSON that matches the schema.`;
+
+      const userQuery = `Project Name: ${projectName || "(not provided)"}\nSpecific Achievement: ${achievement}`;
+
+      const payload = {
+        contents: [{ parts: [{ text: userQuery }] }],
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              "standards": { "type": "ARRAY", "items": { "type": "STRING" } },
+              "determinants": { "type": "ARRAY", "items": { "type": "STRING" } },
+              "rationale": { "type": "STRING" },
+              "interviewSnippet": { "type": "STRING" },
+              "evidencePrompts": { "type": "ARRAY", "items": { "type": "STRING" } },
+              "nextStep": { "type": "STRING" }
+            },
+            propertyOrdering: ["standards", "determinants", "rationale", "interviewSnippet", "evidencePrompts", "nextStep"]
+          }
+        }
+      };
+
+      const result = await callGeminiApi(payload);
+
+      // Defensive: clamp to 1–3 each
+      const standards = (result.standards || []).slice(0, 3);
+      const determinants = (result.determinants || []).slice(0, 3);
+
+      renderChips("outputStandards", standards, "#7a5195");
+      renderChips("outputDeterminants", determinants, "#ef5675");
+
+      const statement = (result.interviewSnippet || "").trim();
+      const rationale = (result.rationale || "").trim();
+
+      document.getElementById("outputSnippet").textContent = statement
+        ? (rationale ? `${statement}\n\nRationale: ${rationale}` : statement)
+        : "—";
+
+      renderEvidence(result.evidencePrompts || []);
+      document.getElementById("outputNextStep").textContent = (result.nextStep || "—").trim();
+
+      outputDiv.classList.remove("hidden");
+      bumpAnalytics_("analysesSucceeded");
+      setStatus("Done ✅ You can Copy or Download Word/PDF.", "ok");
+
+    } catch (error) {
+      bumpAnalytics_("analysesFailed");
+
+      const msg = String(error?.message || "");
+
+      // Friendly messages
+      if (msg.includes("429") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("TOOL_BUSY")) {
+        setStatus("Tool is busy right now — please try again in a few minutes.", "warn");
+      } else if (msg.includes("403")) {
+        setStatus("Access blocked (403). This is usually an API key restriction/referrer issue.", "error");
+      } else if (msg.includes("Failed to fetch")) {
+        setStatus("Network blocked. This may be a firewall issue.", "error");
+      } else {
+        setStatus("Could not connect to the analysis service. Please refresh and try again.", "error");
+      }
+
+      document.getElementById("resultOutput").classList.remove("hidden");
+      renderChips("outputStandards", [], "#7a5195");
+      renderChips("outputDeterminants", [], "#ef5675");
+      document.getElementById("outputSnippet").textContent =
+        "Could not generate insights right now. If this happens during a PL session, it may be quota/rate limiting — try again shortly.";
+      renderEvidence([]);
+      document.getElementById("outputNextStep").textContent = "—";
+
+    } finally {
+      button.disabled = false;
+      buttonText.textContent = "Analyze & Generate Insights";
+      spinner.classList.add("hidden");
+    }
+  }
 </script>
 </body>
 </html>
+
