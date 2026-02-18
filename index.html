@@ -475,6 +475,11 @@ console.log("REFERRER:", document.referrer);
         }
 
         if (!response.ok) {
+           const errorText = await response.text();
+  console.log("STATUS:", response.status);
+  console.log("API ERROR BODY:", errorText);
+  throw new Error(`API_ERROR|${response.status}|${errorText}`);
+}
           const errorText = await response.text();
           console.log("API ERROR BODY:", errorText);
           throw new Error(`API_ERROR|${response.status}|${errorText}`);
