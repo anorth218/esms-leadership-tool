@@ -450,72 +450,50 @@
    * GEMINI CALL (with quota-burst messaging)
    ******************************************************************/
   async function callGeminiApi(payload, maxRetries = 5) {
-    let lastError = null;
+  let lastError = null;
 
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        console.log("ORIGIN:", window.location.origin);
-console.log("HREF:", window.location.href);
-console.log("REFERRER:", document.referrer);
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey
+        },
+        body: JSON.stringify(payload)
+      });
 
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": apiKey
-          },
-          body: JSON.stringify(payload)
-        });
-
-        // Quota / busy handling (429 / 503)
-        if (response.status === 429 || response.status === 503) {
-          bumpAnalytics_("busyHits");
-          const waitSec = Math.min(8, 2 + i * 2);
-          throw new Error(`TOOL_BUSY|${waitSec}`);
-        }
-
-        if (!response.ok) {
-           const errorText = await response.text();
-  console.log("STATUS:", response.status);
-  console.log("API ERROR BODY:", errorText);
-  throw new Error(`API_ERROR|${response.status}|${errorText}`);
-}
-          const errorText = await response.text();
-          console.log("API ERROR BODY:", errorText);
-          throw new Error(`API_ERROR|${response.status}|${errorText}`);
-        }
-
-        const result = await response.json();
-
-        const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!jsonText) throw new Error("EMPTY_RESPONSE");
-
-        const cleanJsonText = jsonText.replace(/```json\n|```/g, "").trim();
-        return JSON.parse(cleanJsonText);
-
-      } catch (err) {
-        lastError = err;
-
-        // If busy, show subtle message and retry with backoff
-        const msg = String(err?.message || "");
-        if (msg.startsWith("TOOL_BUSY|")) {
-          const waitSec = Number(msg.split("|")[1] || "4");
-          setStatus(`Tool is busy right now — please try again in a few moments. (Retrying…)`, "warn");
-          await new Promise(r => setTimeout(r, waitSec * 1000));
-          continue;
-        }
-
-        // Other errors: exponential backoff a couple of times, then fail
-        const delay = Math.pow(2, i) * 800 + (Math.random() * 400);
-        if (i < maxRetries - 1) {
-          await new Promise(r => setTimeout(r, delay));
-        }
+      if (response.status === 429 || response.status === 503) {
+        const waitSec = Math.min(8, 2 + i * 2);
+        setStatus("Tool is busy right now — retrying…", "warn");
+        await new Promise(r => setTimeout(r, waitSec * 1000));
+        continue;
       }
-    }
 
-    // Throw a simplified error at the end
-    throw new Error(lastError ? String(lastError.message || lastError) : "Unknown network error.");
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log("STATUS:", response.status);
+        console.log("API ERROR BODY:", errorText);
+        throw new Error(`API_ERROR_${response.status}`);
+      }
+
+      const result = await response.json();
+
+      const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!jsonText) throw new Error("EMPTY_RESPONSE");
+
+      const cleanJsonText = jsonText.replace(/```json\n|```/g, "").trim();
+      return JSON.parse(cleanJsonText);
+
+    } catch (err) {
+      lastError = err;
+      await new Promise(r => setTimeout(r, 800 * (i + 1)));
+    }
   }
+
+  throw lastError || new Error("Unknown API error");
+}
+
 
   /******************************************************************
    * MAIN ACTION
