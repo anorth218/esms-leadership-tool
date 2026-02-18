@@ -454,6 +454,10 @@
 
     for (let i = 0; i < maxRetries; i++) {
       try {
+        console.log("ORIGIN:", window.location.origin);
+console.log("HREF:", window.location.href);
+console.log("REFERRER:", document.referrer);
+
         const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
