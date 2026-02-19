@@ -532,6 +532,8 @@
     buttonText.textContent = "Analyzing…";
     spinner.classList.remove("hidden");
 
+    setStatus("Generating your leadership profile… this can take ~5–10 seconds.", "neutral");
+
     bumpAnalytics_("analysesStarted");
 
     try {
