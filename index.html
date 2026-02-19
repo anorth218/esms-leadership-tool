@@ -153,9 +153,8 @@
    * is blocked for your district, this remains client-side.
    * Rotate your key if it was ever shared.
    ******************************************************************/
-  const apiKey = "AIzaSyCcvHIfLjIpalHjVfPGQ5aTar4la3xRKTA"; // <-- replace on GitHub (not here)
-  const modelName = "gemini-2.5-flash";
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
+    const modelName = "gemini-2.5-flash";
+  const apiUrl = `https://esms-leadership-tool.amnorth1975.workers.dev;
 
   const allStandards = [
     "Leading for Learning and Managing Change",
@@ -543,13 +542,11 @@ function printBlankTemplate() {
   for (let i = 0; i < maxRetries; i++) {
     try {
       const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": apiKey
-        },
-        body: JSON.stringify(payload)
-      });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+});
+
 
       if (response.status === 429 || response.status === 503) {
         const waitSec = Math.min(8, 2 + i * 2);
@@ -657,24 +654,25 @@ Return ONLY valid JSON that matches the schema.`;
       const userQuery = `Project Name: ${projectName || "(not provided)"}\nSpecific Achievement: ${achievement}`;
 
       const payload = {
-        contents: [{ parts: [{ text: userQuery }] }],
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "OBJECT",
-            properties: {
-              "standards": { "type": "ARRAY", "items": { "type": "STRING" } },
-              "determinants": { "type": "ARRAY", "items": { "type": "STRING" } },
-              "rationale": { "type": "STRING" },
-              "interviewSnippet": { "type": "STRING" },
-              "evidencePrompts": { "type": "ARRAY", "items": { "type": "STRING" } },
-              "nextStep": { "type": "STRING" }
-            },
-            propertyOrdering: ["standards", "determinants", "rationale", "interviewSnippet", "evidencePrompts", "nextStep"]
-          }
-        }
-      };
+  model: modelName,   // <-- ADD THIS LINE
+  contents: [{ parts: [{ text: userQuery }] }],
+  systemInstruction: { parts: [{ text: systemPrompt }] },
+  generationConfig: {
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: "OBJECT",
+      properties: {
+        "standards": { "type": "ARRAY", "items": { "type": "STRING" } },
+        "determinants": { "type": "ARRAY", "items": { "type": "STRING" } },
+        "rationale": { "type": "STRING" },
+        "interviewSnippet": { "type": "STRING" },
+        "evidencePrompts": { "type": "ARRAY", "items": { "type": "STRING" } },
+        "nextStep": { "type": "STRING" }
+      }
+    }
+  }
+};
+
 
       const result = await callGeminiApi(payload);
 
