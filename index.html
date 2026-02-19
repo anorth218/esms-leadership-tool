@@ -99,6 +99,11 @@
         <button class="bg-[#ef5675] hover:bg-[#bc5090] text-white font-semibold py-2 px-4 rounded-lg shadow"
                 onclick="downloadAsPDF()">
           Download PDF
+          <button class="bg-white hover:bg-gray-50 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow border border-gray-200"
+        onclick="printBlankTemplate()">
+  Printable Template
+</button>
+
         </button>
       </div>
     </div>
@@ -445,6 +450,89 @@
     setStatus("Opening print dialog… choose “Save as PDF”.", "ok");
     w.print();
   }
+function printBlankTemplate() {
+  const project = (document.getElementById("projectName")?.value || "").trim();
+  const title = project ? `Leadership Reflection – ${project}` : "Leadership Reflection";
+
+  const templateHtml = `
+    <div class="wrap">
+      <h1>My Leadership Reflection</h1>
+      <h2>${project ? escapeHtml(project) : "Project / Initiative"}</h2>
+
+      <div class="section">
+        <h3>Achievement Summary</h3>
+        <div class="lines tall"></div>
+      </div>
+
+      <div class="section two-col">
+        <div>
+          <h3>Leadership Standards (Actions)</h3>
+          <div class="lines"></div>
+        </div>
+        <div>
+          <h3>Areas of Impact (Determinants)</h3>
+          <div class="lines"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>High-Impact Professional Statement</h3>
+        <div class="lines tall"></div>
+      </div>
+
+      <div class="section">
+        <h3>Evidence I Can Name</h3>
+        <ol>
+          <li class="line-item"></li>
+          <li class="line-item"></li>
+          <li class="line-item"></li>
+          <li class="line-item"></li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h3>Next Step</h3>
+        <div class="lines"></div>
+      </div>
+
+      <div class="footer">
+        Tip: Use this as working notes. You can still Copy/Download your generated results when ready.
+      </div>
+    </div>
+  `;
+
+  const css = `
+    @page { margin: 18mm; }
+    body { font-family: Arial, sans-serif; color: #111827; }
+    .wrap { max-width: 900px; }
+    h1 { color:#003f5c; font-size: 22px; margin: 0 0 8px 0; }
+    h2 { color:#003f5c; font-size: 15px; margin: 0 0 16px 0; font-weight: 700; }
+    h3 { font-size: 13px; margin: 16px 0 6px; color:#111827; }
+    .two-col { display: flex; gap: 18px; }
+    .two-col > div { flex: 1; }
+    .section { margin-top: 8px; }
+    .lines { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; min-height: 60px; }
+    .lines.tall { min-height: 120px; }
+    ol { margin-left: 18px; }
+    .line-item { border-bottom: 1px solid #e5e7eb; height: 22px; }
+    .footer { margin-top: 18px; font-size: 10px; color: #6b7280; }
+  `;
+
+  const w = window.open("", "_blank");
+  w.document.write(`
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>${escapeHtml(title)}</title>
+        <style>${css}</style>
+      </head>
+      <body>${templateHtml}</body>
+    </html>
+  `);
+  w.document.close();
+  w.focus();
+  w.print();
+}
 
   /******************************************************************
    * GEMINI CALL (with quota-burst messaging)
